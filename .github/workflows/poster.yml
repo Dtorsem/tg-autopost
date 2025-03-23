@@ -1,23 +1,30 @@
-name: AutoPost to Google Sheets
+name: Автоматический постинг
 
 on:
   schedule:
-    - cron: '0 9 * * *' # 9:00 UTC (12:00 MSK)
+    - cron: '0 12 * * *' # запуск ежедневно в 12:00 UTC (15:00 по МСК)
 
 jobs:
   autopost:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.10'
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
-      - run: pip install gspread oauth2client openai
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Запуск автопоста
-        env:
-          GOOGLE_CREDS: ${{ secrets.GOOGLE_CREDS }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: python autopost.py
+    - name: Install Dependencies
+      run: |
+        pip install openai gspread oauth2client requests
+
+    - name: Send Telegram Post
+      env:
+        GOOGLE_CREDS: ${{ secrets.GOOGLE_CREDS }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        CHAT_ID: ${{ secrets.CHAT_ID }}
+      run: |
+        python autopost.py
