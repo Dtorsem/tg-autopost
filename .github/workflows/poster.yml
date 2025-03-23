@@ -1,28 +1,23 @@
-name: AutoPost Telegram
+name: AutoPost to Google Sheets
 
 on:
   schedule:
-    - cron: '0 9 * * *'  # ежедневно в 12:00 по Москве
-  workflow_dispatch:
+    - cron: '0 9 * * *' # 9:00 UTC (12:00 MSK)
 
 jobs:
-  post:
+  autopost:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v3
         with:
           python-version: '3.10'
 
-      - name: Install Dependencies
-        run: pip install gspread oauth2client requests
+      - run: pip install gspread oauth2client openai
 
-      - name: Send Telegram Post
+      - name: Запуск автопоста
         env:
           GOOGLE_CREDS: ${{ secrets.GOOGLE_CREDS }}
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python autopost.py
