@@ -1,0 +1,28 @@
+name: AutoPost Telegram
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # ежедневно в 12:00 по Москве
+  workflow_dispatch:
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install gspread oauth2client requests
+
+      - name: Send Telegram Post
+        env:
+          GOOGLE_CREDS: ${{ secrets.GOOGLE_CREDS }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python autopost.py
