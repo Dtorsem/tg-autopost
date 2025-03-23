@@ -1,11 +1,12 @@
-name: Автоматический постинг
+name: AutoPost from Google Sheets to Telegram
 
 on:
   schedule:
-    - cron: '0 12 * * *' # запуск ежедневно в 12:00 UTC (15:00 по МСК)
+    - cron: '0 9 * * *'
+  workflow_dispatch:
 
 jobs:
-  autopost:
+  send-post:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
